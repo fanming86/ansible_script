@@ -1,0 +1,11 @@
+---
+- name: send exam 
+  gather_facts: no
+  hosts: all
+  tasks:
+    - name: unarchive tar
+      ansible.builtin.unarchive:
+        src: sdhm240824.tar
+        dest: /opt/jupyter-lab/
+        owner: training
+        group: training

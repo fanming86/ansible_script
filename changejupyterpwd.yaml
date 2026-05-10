@@ -1,0 +1,16 @@
+---  
+- name: change jupyter lab passwd
+  hosts: all
+  gather_facts: no
+  tasks:  
+    - name: change pwd 
+      replace:
+        path:  /usr/local/bin/start
+        regexp: "token='.*'"
+        replace: "token='{{ password }}'"
+
+    - name: restart jupyterlab
+      service: 
+        name: jupyterlab
+        state: restarted
+        enabled: yes

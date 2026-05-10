@@ -1,0 +1,29 @@
+---
+- name: Setup SSH Key for Passwordless Login
+  hosts: all
+  become: yes
+  vars:
+    ssh_pub_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"  # 本地公钥路径
+
+  tasks:
+    - name: Ensure .ssh directory exists for the user
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.ssh
+        state: directory
+        mode: '0700'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Add public key to authorized_keys
+      ansible.builtin.authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ ssh_pub_key }}"
+        state: present
+
+    - name: Ensure permissions are correct for authorized_keys
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.ssh/authorized_keys
+        mode: '0600'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source /opt/anaconda3/bin/activate base
+cd /opt/jupyter-lab
+jupyter-lab --no-browser --ip='127.0.0.1' --ServerApp.token=''  --port=9000  --allow-root

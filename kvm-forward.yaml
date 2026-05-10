@@ -1,0 +1,86 @@
+---
+- name: Update libvirt default network to open forward mode
+  hosts: all
+  gather_facts: no
+  vars:
+    portlist:
+      - sport: 80
+        toaddr: 192.168.100.222
+        dport: 80
+  tasks:
+    - name: Replace 'nat' with 'open' in default network XML
+      replace:
+        path: /etc/libvirt/qemu/networks/default.xml
+        regexp: "forward mode='nat'"
+        replace: "forward mode='open'"
+        backup: yes
+      register: replace_result
+
+    - name: Fail if the replacement did not occur
+      debug:
+        msg: "Replacement of 'nat' with 'open' failed."
+      when: not replace_result.changed
+
+    - name: Define, destroy, and restart the default network
+      block:
+        - name: Define the updated libvirt network
+          shell: "virsh  net-define  /etc/libvirt/qemu/networks/default.xml"
+
+        - name: Destroy and restart the default network
+          virt_net:
+            name: default
+            state: inactive
+
+        - name: Restart the default network
+          virt_net:
+            name: default
+            state: active
+      when: replace_result.changed
+
+    - name: start firewalld
+      service: 
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: config forward
+      firewalld:
+        port_forward:
+          - port: "{{item.sport}}"
+            proto: tcp
+            toport: "{{item.dport}}"
+            toaddr: "{{item.toaddr}}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      with_items:
+        - "{{portlist}}"
+
+    - name: Open port {{ item.sport }} for TCP
+      firewalld:
+        port: "{{ item.sport }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      with_items:
+        - "{{portlist}}"
+
+    - name: Enable RDP service
+      firewalld:
+        service: rdp
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: masq
+      firewalld:
+        masquerade: enable 
+        state: enabled 
+        immediate: true 
+        permanent: true
+
+    - name: restart libvirtd
+      service: 
+        name: libvirtd
+        state: restarted
+        enabled: yes

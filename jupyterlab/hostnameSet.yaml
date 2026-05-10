@@ -1,0 +1,12 @@
+- name: 修改 /etc/hostname 并快速生效
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    # 1. 永久修改配置文件（重启后生效）
+    - name: 备份并更新 /etc/hostname
+      ansible.builtin.lineinfile:
+        path: /etc/hostname
+        regexp: '^.*$'
+        line: "{{ new_hostname }}"
+        backup: yes

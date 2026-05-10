@@ -1,0 +1,55 @@
+---
+- name: config port forward
+  hosts: all
+  gather_facts: no
+  vars: 
+    portlist:
+      - sport: 24221
+        toaddr: 192.168.100.21
+        dport: 22
+      - sport: 24201
+        toaddr: 192.168.100.201
+        dport: 22
+      - sport: 24202
+        toaddr: 192.168.100.202
+        dport: 22
+#      - sport: 2084
+#        toaddr: 192.168.122.84
+#        dport: 22
+   
+  tasks:
+    #    - name: stop firewalld
+    #  service: 
+    #    name: firewalld
+    #    state: stopped
+    #    enabled: no
+
+          #    - name: ipables
+          #      command: " iptables -I FORWARD -o private -d  {{item.toaddr}} -j ACCEPT "
+          #      loop: "{{portlist}}"
+        
+          #    - name: iptables 222
+          #      command: "iptables -t nat -I PREROUTING -p tcp --dport {{item.sport}} -j DNAT --to {{item.toaddr}}:{{item.dport}}"
+          #      loop: "{{portlist}}"
+
+    - name: config forward
+      firewalld:
+        port_forward:
+          - port: "{{item.sport}}"
+            proto: tcp
+            toport: "{{item.dport}}"
+            toaddr: "{{item.toaddr}}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      with_items:
+        - "{{portlist}}"
+
+    - name: Open port {{ item.sport }} for TCP
+      firewalld:
+        port: "{{ item.sport }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      with_items:
+        - "{{portlist}}"

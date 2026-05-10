@@ -1,0 +1,42 @@
+---
+- name: install vmctl
+  hosts: all
+  gather_facts: no
+  vars:
+    #- rht_file: 'http://172.31.0.242:17242/vm/stream9/stream9-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/ex/ex-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/openstackz/openstackz-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/openstacka/openstacka-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/openstacky/openstacky-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/httpd/httpd-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/centos7/centos7-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/rhcsa9/rhcsa9-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/rhce9/rhce9-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/k8s27u/k8s27u-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/k8s28c/k8s28c-rht'
+    - rht_file: 'http://172.31.0.242:17242/vm/k8s34u/k8s34u-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/rocky9/rocky9-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/ubuntu2204/ubuntu2204-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/openstack/openstack-rht'
+    #- rht_file: 'http://172.31.0.242:17242/vm/cephs/cephs-rht'
+  tasks:
+    - name: yum install vmctl
+      yum:
+        name: 'http://172.31.0.242:17242/vmctl-v4-3.el9.x86_64.rpm'
+        state: installed
+        disable_gpg_check: yes
+
+    - name: copy rhtfile
+      get_url:
+        url: '{{ rht_file }}'
+        dest: /etc/rht
+          #dest: "/opt/"
+
+    - name: start vm
+      #shell: "yes | vmctl reset all"
+      #shell: "yes | vmctl poweroff all"
+      #command: "vmctl stop all"
+      #command: "vmctl status all"
+      command: "vmctl start all"
+      #command: "vmctl stop all -f /opt/stream9-rht "
+

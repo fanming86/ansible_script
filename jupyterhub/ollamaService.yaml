@@ -1,0 +1,25 @@
+---
+- name: Modify ollama.service to add OLLAMA_HOST environment variable
+  hosts: all
+  become: true
+  tasks:
+    - name: Insert Environment="OLLAMA_HOST=0.0.0.0" after PATH line
+      lineinfile:
+        path: /etc/systemd/system/ollama.service
+        insertafter: '^Environment="PATH=.*"$'
+        line: 'Environment="OLLAMA_HOST=0.0.0.0"'
+        state: present
+        backup: yes
+      notify:
+        - Reload systemd
+        - Restart ollama service
+
+  handlers:
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Restart ollama service
+      systemd:
+        name: ollama
+        state: restarted
+

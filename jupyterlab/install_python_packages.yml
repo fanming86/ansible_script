@@ -1,0 +1,32 @@
+---
+- name: Install Python packages
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Set up pip to use Tsinghua mirrors
+      copy:
+        dest: /etc/pip.conf
+        content: |
+          [global]
+          index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+
+    - name: Install Python packages
+      pip:
+        name:
+          - jupyterlab-language-pack-zh-CN
+          - jupyterlab_code_formatter
+          - jupyterlab-lsp 
+          - python-lsp-server
+          - jupyterhub_idle_culler
+          - torch==2.0.1
+          #- torchvision 
+          - torchsummary==1.5.1
+            #- torchaudio
+            #- sklearn
+            #- modelscope
+            #- vllm==0.9.1
+            #- transformers==4.52.1
+        state: present
+          #virtualenv: /opt/anaconda3/
+        virtualenv: /usr/local/anaconda
+

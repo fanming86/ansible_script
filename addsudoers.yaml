@@ -1,0 +1,12 @@
+---  
+- name: Add sudoers line for training user  
+  hosts: all
+  gather_facts: no
+  tasks:  
+    - name: Ensure training user has NOPASSWD for vmctl at line 101
+      lineinfile:
+        path: /etc/sudoers
+        line: 'training ALL=(ALL) NOPASSWD: /usr/bin/vmctl'
+        insertafter: '^root'
+        state: present
+        validate: 'visudo -cf %s'  # 使用 visudo 进行语法检查

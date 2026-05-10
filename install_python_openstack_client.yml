@@ -1,0 +1,24 @@
+---
+- name: Install Python packages
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: install pip
+      package:
+        name: python3-pip
+        state: present
+
+    - name: Set up pip to use Tsinghua mirrors
+      copy:
+        dest: /etc/pip.conf
+        content: |
+          [global]
+          index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+
+    - name: Install Python packages
+      pip:
+        name:
+          - python-openstackclient
+        state: present
+          #  virtualenv: /usr/bin/pip
+

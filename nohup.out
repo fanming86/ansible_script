@@ -1,0 +1,271 @@
+
+PLAY [install vmctl] ***********************************************************
+
+TASK [yum install vmctl] *******************************************************
+changed: [172.31.10.17]
+changed: [172.31.10.10]
+changed: [172.31.10.8]
+changed: [172.31.10.7]
+changed: [172.31.10.20]
+ok: [172.31.10.1]
+changed: [172.31.10.18]
+changed: [172.31.10.25]
+changed: [172.31.10.21]
+changed: [172.31.10.5]
+changed: [172.31.10.23]
+changed: [172.31.10.15]
+changed: [172.31.10.13]
+changed: [172.31.10.14]
+changed: [172.31.10.16]
+changed: [172.31.10.2]
+changed: [172.31.10.30]
+changed: [172.31.10.4]
+changed: [172.31.10.6]
+changed: [172.31.10.22]
+changed: [172.31.10.3]
+changed: [172.31.10.29]
+changed: [172.31.10.12]
+changed: [172.31.10.24]
+changed: [172.31.10.9]
+changed: [172.31.10.28]
+changed: [172.31.10.26]
+changed: [172.31.10.27]
+changed: [172.31.10.19]
+changed: [172.31.10.11]
+changed: [172.31.10.32]
+changed: [172.31.10.34]
+changed: [172.31.10.33]
+changed: [172.31.10.39]
+changed: [172.31.10.38]
+changed: [172.31.10.36]
+changed: [172.31.10.31]
+changed: [172.31.10.44]
+changed: [172.31.10.35]
+changed: [172.31.10.42]
+changed: [172.31.10.40]
+changed: [172.31.10.49]
+changed: [172.31.10.37]
+changed: [172.31.10.54]
+changed: [172.31.10.47]
+changed: [172.31.10.60]
+changed: [172.31.10.43]
+changed: [172.31.10.59]
+changed: [172.31.10.48]
+changed: [172.31.10.53]
+changed: [172.31.10.41]
+changed: [172.31.10.51]
+changed: [172.31.10.46]
+changed: [172.31.10.45]
+changed: [172.31.10.50]
+changed: [172.31.10.55]
+changed: [172.31.10.52]
+changed: [172.31.10.56]
+changed: [172.31.10.57]
+changed: [172.31.10.58]
+changed: [172.31.10.61]
+changed: [172.31.10.64]
+changed: [172.31.10.63]
+changed: [172.31.10.62]
+changed: [172.31.10.65]
+
+TASK [copy rhtfile] ************************************************************
+changed: [172.31.10.7]
+changed: [172.31.10.18]
+changed: [172.31.10.17]
+changed: [172.31.10.8]
+changed: [172.31.10.20]
+changed: [172.31.10.10]
+changed: [172.31.10.21]
+changed: [172.31.10.5]
+changed: [172.31.10.23]
+changed: [172.31.10.22]
+changed: [172.31.10.19]
+changed: [172.31.10.2]
+changed: [172.31.10.15]
+changed: [172.31.10.3]
+changed: [172.31.10.24]
+changed: [172.31.10.26]
+changed: [172.31.10.11]
+changed: [172.31.10.13]
+changed: [172.31.10.25]
+changed: [172.31.10.27]
+changed: [172.31.10.6]
+changed: [172.31.10.9]
+changed: [172.31.10.28]
+changed: [172.31.10.12]
+changed: [172.31.10.16]
+ok: [172.31.10.1]
+changed: [172.31.10.14]
+changed: [172.31.10.29]
+changed: [172.31.10.4]
+changed: [172.31.10.30]
+changed: [172.31.10.32]
+changed: [172.31.10.34]
+changed: [172.31.10.31]
+changed: [172.31.10.38]
+changed: [172.31.10.39]
+changed: [172.31.10.33]
+changed: [172.31.10.44]
+changed: [172.31.10.35]
+changed: [172.31.10.47]
+changed: [172.31.10.36]
+changed: [172.31.10.37]
+changed: [172.31.10.54]
+changed: [172.31.10.49]
+changed: [172.31.10.41]
+changed: [172.31.10.42]
+changed: [172.31.10.45]
+changed: [172.31.10.43]
+changed: [172.31.10.40]
+changed: [172.31.10.59]
+changed: [172.31.10.50]
+changed: [172.31.10.48]
+changed: [172.31.10.46]
+changed: [172.31.10.53]
+changed: [172.31.10.51]
+changed: [172.31.10.52]
+changed: [172.31.10.58]
+changed: [172.31.10.56]
+changed: [172.31.10.55]
+changed: [172.31.10.57]
+changed: [172.31.10.61]
+changed: [172.31.10.65]
+changed: [172.31.10.63]
+changed: [172.31.10.60]
+changed: [172.31.10.64]
+changed: [172.31.10.62]
+
+TASK [start vm] ****************************************************************
+changed: [172.31.10.1]
+changed: [172.31.10.17]
+changed: [172.31.10.10]
+changed: [172.31.10.3]
+changed: [172.31.10.14]
+changed: [172.31.10.7]
+changed: [172.31.10.8]
+changed: [172.31.10.23]
+changed: [172.31.10.16]
+changed: [172.31.10.20]
+changed: [172.31.10.9]
+changed: [172.31.10.21]
+changed: [172.31.10.18]
+changed: [172.31.10.13]
+changed: [172.31.10.29]
+changed: [172.31.10.25]
+changed: [172.31.10.5]
+changed: [172.31.10.6]
+changed: [172.31.10.19]
+changed: [172.31.10.2]
+changed: [172.31.10.24]
+changed: [172.31.10.22]
+changed: [172.31.10.26]
+changed: [172.31.10.30]
+changed: [172.31.10.4]
+changed: [172.31.10.12]
+changed: [172.31.10.31]
+changed: [172.31.10.28]
+changed: [172.31.10.27]
+changed: [172.31.10.15]
+changed: [172.31.10.11]
+changed: [172.31.10.32]
+changed: [172.31.10.34]
+changed: [172.31.10.33]
+changed: [172.31.10.35]
+changed: [172.31.10.38]
+changed: [172.31.10.36]
+changed: [172.31.10.42]
+changed: [172.31.10.39]
+changed: [172.31.10.44]
+changed: [172.31.10.40]
+changed: [172.31.10.41]
+changed: [172.31.10.43]
+changed: [172.31.10.60]
+changed: [172.31.10.49]
+changed: [172.31.10.57]
+changed: [172.31.10.59]
+changed: [172.31.10.48]
+changed: [172.31.10.47]
+changed: [172.31.10.54]
+changed: [172.31.10.46]
+changed: [172.31.10.45]
+changed: [172.31.10.65]
+changed: [172.31.10.52]
+changed: [172.31.10.64]
+changed: [172.31.10.37]
+changed: [172.31.10.51]
+changed: [172.31.10.63]
+changed: [172.31.10.56]
+changed: [172.31.10.61]
+changed: [172.31.10.55]
+changed: [172.31.10.62]
+changed: [172.31.10.58]
+changed: [172.31.10.50]
+changed: [172.31.10.53]
+
+PLAY RECAP *********************************************************************
+172.31.10.1                : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.10               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.11               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.12               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.13               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.14               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.15               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.16               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.17               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.18               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.19               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.2                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.20               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.21               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.22               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.23               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.24               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.25               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.26               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.27               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.28               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.29               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.3                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.30               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.31               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.32               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.33               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.34               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.35               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.36               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.37               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.38               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.39               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.4                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.40               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.41               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.42               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.43               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.44               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.45               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.46               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.47               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.48               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.49               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.5                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.50               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.51               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.52               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.53               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.54               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.55               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.56               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.57               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.58               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.59               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.6                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.60               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.61               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.62               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.63               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.64               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.65               : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.7                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.8                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.10.9                : ok=3    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

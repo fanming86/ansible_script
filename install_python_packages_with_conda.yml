@@ -1,0 +1,40 @@
+---
+- name: Install Python packages on RHEL 9
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Set up pip to use Tsinghua mirrors
+      copy:
+        dest: /etc/pip.conf
+        content: |
+          [global]
+          index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+
+    - name: Install Python packages
+      pip:
+        name:
+          - opencv-python
+          - opencv-contrib-python
+          - jieba
+          - gensim
+          - transformers
+          - scikit-learn
+          - spacy
+          - nltk
+          - numpy
+          - langchain_openai
+          - langserve
+          - fastapi
+            #- tensorflow
+            #- keras
+            #- langchain_community
+            #- openai
+            #- torch
+            #- torchvision
+            #- python-dotenv
+            #- dashscope
+          
+        state: present
+        virtualenv: /opt/anaconda3/
+
+

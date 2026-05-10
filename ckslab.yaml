@@ -1,0 +1,22 @@
+---
+- name: install vmctl
+  hosts: all
+  gather_facts: no
+  vars:
+    - rht_file: 'http://172.31.0.242:17242/vm/cks28/cks28-rht'
+  tasks:
+    - name: yum install vmctl
+      yum:
+        name: 'http://172.31.0.242:17242/vmctl-v4-3.el9.x86_64.rpm'
+        state: installed
+        disable_gpg_check: yes
+
+    - name: copy rhtfile
+      get_url:
+        url: '{{ rht_file }}'
+        dest: '/etc/rht'
+
+    - name: start vm
+      command: "vmctl start all "
+        #shell: "yes | vmctl remove all -f /opt/rhcsa9-rht"
+

@@ -1,0 +1,148 @@
+#!/bin/bash
+
+function conf_xml() {
+	#配置xml ，替换信息
+	vir_uuid=$(uuidgen)
+	vir_mac="52:54:$(dd if=/dev/urandom count=1 2>/dev/null | md5sum | sed -r 's/^(..)(..)(..)(..).*$/\1:\2:\3:\4/')"
+
+	sed -i "s/<name>.*<\/name>/<name>${vmname}<\/name>/" ${destxml}
+	sed -i "s/<uuid>.*<\/uuid>/<uuid>${vir_uuid}<\/uuid>/" ${destxml}
+	sed -i "s/<title>.*<\/title>/<title>${vmname}<\/title>/" ${destxml}
+	sed -i "s/<mac address=.*\/>/<mac address='$vir_mac' \/>/" ${destxml}
+	# 如果是centos7 一类的基础镜像，可以通过同一个镜像创建多个虚拟机，那么这里需要修改镜像文件
+	[[ $c -eq 1 ]] && sed -i "s#<source file='/var/lib/libvirt/images/${OVLNAME}\.qcow2'/>#<source file='${VMBLKPATH}/${vmname}.qcow2'/>#" ${destxml}
+	# 有些模板里面是固定的IP，不能修改，例如openstack ceph 此类集群
+}
+
+function define_net() {
+	# Check if the network already exists
+	if virsh net-list --all | grep -q 'ospnet'; then
+	return 6
+	fi
+
+cat > /tmp/ospnet <<EOF
+<network>
+<name>ospnet</name>
+<forward mode='nat'/>
+<bridge name='ospnet' stp='on' delay='0'/>
+<ip address='10.0.0.1' netmask='255.255.255.0'>
+	<dhcp>
+	<range start='10.0.0.2' end='10.0.0.254'/>
+	</dhcp>
+</ip>
+</network>
+EOF
+
+	virsh net-define  /tmp/ospnet  > /dev/null
+	virsh net-start  ospnet  > /dev/null
+	virsh net-autostart  ospnet  > /dev/null
+}
+
+
+function download_file() {
+	# 下载xml模板，下载到本地以tp结尾，kvm会直接识别xml文件为一个虚机
+	echo ${DOWNLOADURL}/${TPNAME}/${OVLNAME}.xml
+	curl -# -f -o ${VMXMLPATH}/${OVLNAME}.tp ${DOWNLOADURL}/${TPNAME}/${OVLNAME}.xml
+	cp ${VMXMLPATH}/${OVLNAME}.tp ${destxml} # 根据模板xml创建新虚拟机要用的xml文件
+
+	##################################
+	# 根据模板xml文件下载镜像文件
+	vdiskList=$(grep -o ${VMBLKPATH}.*qcow2 ${destxml})
+	for vdisk0 in ${vdiskList}; do
+		vdisk=${vdisk0#${VMBLKPATH}}
+		chattr -i ${VMBLKPATH}/${vdisk}.ovl 2> /dev/null
+		if [[ ! -f ${VMBLKPATH}/${vdisk}.ovl ]]; then
+			echo "Downloading multi image ${vdisk}.ovl"
+			if ! curl -C - -# -f -o ${VMBLKPATH}/${vdisk}.ovl ${DOWNLOADURL}/${TPNAME}/${vdisk}; then
+				echo "Error: Unable to download image - ${VMBLKPATH}/${vdisk}"
+				# echo "Error: Unable to download image - ${DOWNLOADURL}/${TPNAME}/${vdisk}"
+				exit 12
+			fi
+		fi
+		# 创建磁盘
+		# chattr -i ${VMBLKPATH}/${vdisk}.ovl
+		if [[ $c -eq 1 ]] ;
+		then
+			qemu-img create -f qcow2 -b ${VMBLKPATH}/${vdisk}.ovl -F qcow2 ${VMBLKPATH}/${vmname}.qcow2 >/dev/null
+		else 
+			qemu-img create -f qcow2 -b ${VMBLKPATH}/${vdisk}.ovl -F qcow2 ${VMBLKPATH}/${vdisk} >/dev/null
+		fi
+	done
+}
+
+function start_vir() {
+	#启动并设置开机自启
+	virsh define ${destxml} >/dev/null
+	virt-customize --ssh-inject root:file:/root/.ssh/id_rsa.pub -d ${vmname} >/dev/null
+	if [[ $c -eq 1 ]]; then
+		virt-edit -d ${vmname} /etc/sysconfig/network-scripts/ifcfg-eth0 -e "s#IPADDR=".*"#IPADDR="${vir_ip}"#" # 替换ip
+		virt-edit -d ${vmname} /etc/hostname -e "s#".*"#"${hostname}"#" # 修改主机名
+	fi
+	virsh start ${vmname} >/dev/null
+	virsh autostart ${vmname} >/dev/null
+	chattr +i ${VMBLKPATH}/${vdisk}.ovl
+}
+
+function write_hosts() {
+	# 生成hosts 文件
+	cat /etc/hosts | grep ${vmname} &>/dev/null
+	if [ $? -eq 0 ]; then	# 如果主机名存在，就修改
+		sed -i "s/^.*${vmname}.*$/${vir_ip}    ${vmname}  ${hostname}/g" /etc/hosts
+	else
+		echo "${vir_ip}    ${vmname}  ${hostname}" >> /etc/hosts
+	fi
+}
+
+function check_root {
+	if [[ "$EUID" -gt "0" ]]; then
+		echo 'Error: this script must be run as root!'
+		exit 1
+	fi
+}
+
+main() {
+check_root
+# source /etc/rht
+
+####################################################################
+DOWNLOADURL='http://172.31.0.242:17242/vm/'
+VMBLKPATH=/var/lib/libvirt/images/       # 镜像存储的位置
+VMXMLPATH=/etc/libvirt/qemu/             # xml 的位置
+####################################################################
+
+vir_ip=$1 									# 虚拟机的IP
+vmname=$2 									# 虚拟机的名字
+TPNAME=$3
+# ${VMXMLPATH}								# xml 的位置
+# ${VMBLKPATH}								# 镜像存储的位置
+# OVLNAME=${TPNAME}-$vmname         		# 模板镜像和xml的名字
+OVLNAME=${vmname}         					# 模板镜像和xml的名字
+destxml=${VMXMLPATH}${vmname}.xml 			# 新建虚拟机所使用的xml文件
+hostname=${vmname}.training.com  	# 主机名
+
+c=0 # 一个标识, 等于1时，表示该模板可以启动任意个主机
+d=0
+case ${TPNAME} in 
+	stream9|centos7|stream8|ubuntu2204)
+		OVLNAME=${TPNAME}
+		c=1		# c=1时，需要修改IP、主机名、xml文件中的磁盘地址
+		;;
+	openstacky)
+		define_net
+		[[ ${vmname} == 'openstacky-controller' ]] && vir_ip=10.0.0.111
+		[[ ${vmname} == 'openstacky-compute' ]] && vir_ip=10.0.0.112
+		[[ ${vmname} == 'openstacky-block' ]] && vir_ip=10.0.0.113
+		;;
+	*) 
+		;;
+esac
+
+download_file
+conf_xml
+start_vir
+write_hosts
+}
+
+#main '192.168.122.11' master
+#main '192.168.122.12' node1
+#main '192.168.122.13' node2

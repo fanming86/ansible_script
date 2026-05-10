@@ -1,0 +1,24 @@
+- name: 删除/tmp下所有内容（排除models目录）
+  hosts: all
+  tasks:
+    - name: 查找/tmp下需删除的文件和目录（排除models）
+      ansible.builtin.find:
+        path: /tmp
+        recurse: no
+        file_type: any
+        excludes: "models"
+      register: items_to_delete
+
+        #- name: 预览待删除的文件名（仅显示文件名）
+        #ansible.builtin.debug:
+        #msg: "{{ item.path }}" 
+        #with_items: "{{ items_to_delete.files }}"
+        #when: items_to_delete.files | length > 0
+
+    - name: 删除筛选出的文件和目录
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ items_to_delete.files }}"
+      when: items_to_delete.files | length > 0
+    

@@ -1,0 +1,23 @@
+---
+- name: push public key
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: mkdir /root/.ssh
+      file:
+        path: /root/.ssh/
+        state: directory
+        mode: '0700'
+
+    - name: touch file authorized_keys
+      file:
+        path: /root/.ssh/authorized_keys
+        state: touch
+        mode: '0600'
+
+    - name: copy pubkey
+      blockinfile: 
+        mode: 0600
+        path: /root/.ssh/authorized_keys 
+        block: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMQh/SCNQjGHj+y8sSpBIYb1g27U+ek/5V0GX8MvPle6 keyman@MacBook-Pro.local"
+          #        block: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaGzOv/jL2idVvejJLjO2eUl9+R+/A7nJwDSBVujdA4Ingw6bPb2Yml7NY/nKg05zy3QNVgfnkPtoTRnmOyofVuUcQ/PBeYV8sNqPM+VRdr4o77LO3DvjKTanrhlQa8H8AQ1kO/QxWexVabxj7K5ULnMMZOqPjq64wrc3L0W8cKOlvFOnYkKuai08kV6D1M3aDwAlK+0a0DPws8W23uLJOQr+Oc3zXTwMDlSATkaWdoCz+x/mmcMBflagSqG2PHDfD6sEvxH6ItsbpshvRzbp3AFWgayKRapyqHLilN+NWPewjXcftyDpJp04bhk3OreENP3vf6n1BYZMuj+n9xb8j root@jumpserver"

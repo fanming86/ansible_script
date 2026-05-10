@@ -1,0 +1,12 @@
+---
+- name: 修改training用户的sudo权限配置
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: 确保training用户的sudo配置正确
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/90-cloud-init-users
+        regexp: 'training ALL=(ALL) NOPASSWD:ALL'  # 匹配旧配置
+        line: 'training ALL=(ALL)  ALL'  # 新配置
+        state: present

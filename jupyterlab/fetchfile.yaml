@@ -1,0 +1,33 @@
+- name: 用清单IP命名备份文件并清理/tmp（排除models）
+  hosts: all
+  gather_facts: no
+  vars:
+    # 本地备份路径（按清单IP区分目录）
+    local_backup_dir: "./tmp_backup/"
+    archive_dir: "/opt/jupyter-lab"
+    exclude_path: "models"
+
+  tasks:
+    - name: 用archive模块打包目录（IP命名）
+      ansible.builtin.archive:
+        path: "{{ archive_dir }}/*"
+        dest: "/tmp/{{ inventory_hostname }}.bz2"
+        format: bz2
+        mode: '0644'
+        exclude_path:
+          - ".local/"
+          - ".cache/"
+          - ".conda/"
+          - "models/"
+          - "LLaMA-Factory-main/*"
+          - "*.safetensors"
+        #exclusion_patterns :
+
+
+    - name: 下载目录压缩包到本地
+      ansible.builtin.fetch:
+        src: "/tmp/{{ inventory_hostname }}.bz2"
+        dest: "{{ local_backup_dir }}/"
+        flat: yes
+        validate_checksum: yes
+

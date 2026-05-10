@@ -1,0 +1,16 @@
+[Unit]
+Description=Jupyter
+After=syslog.target network.target
+
+[Service]
+Type=exec
+User=training
+Environment="PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+WorkingDirectory=/opt/jupyter-lab/
+ExecStart=/usr/local/anaconda/bin/jupyter-lab --no-browser --ip='*' --ServerApp.token='35357'  --port=8888
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,13 @@
+---
+- name: Install Python packages
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: 创建/opt/models目录
+      file:
+        path: /opt/models
+        state: directory
+        owner: root
+        group: ubuntu
+        mode: '1777'
+        recurse: false  # 不递归设置

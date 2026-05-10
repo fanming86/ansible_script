@@ -1,0 +1,7 @@
+[bjgpu]
+117.50.193.11     ansible_user=ubuntu  ansible_password="Asimov@132"
+117.50.188.28    ansible_user=ubuntu  ansible_password="Asimov@132"
+117.50.163.246    ansible_user=ubuntu  ansible_password="Asimov@132"
+117.50.171.51    ansible_user=ubuntu  ansible_password="Asimov@132"
+117.50.171.191    ansible_user=ubuntu  ansible_password="Asimov@132"
+117.50.189.93    ansible_user=ubuntu  ansible_password="Asimov@132"

@@ -1,0 +1,43 @@
+---
+- name: config port forward
+  hosts: all
+  gather_facts: no
+  vars:
+    portlist:
+      - sport: 24210
+        toaddr: 192.168.100.10
+        dport: 22
+      - sport: 24220
+        toaddr: 192.168.100.20
+        dport: 22
+  tasks:
+    - name: config forward
+      firewalld:
+        port_forward:
+          - port: "{{item.sport}}"
+            proto: tcp
+            toport: "{{item.dport}}"
+            toaddr: "{{item.toaddr}}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      with_items:
+        - "{{portlist}}"
+
+    - name: Open port {{ item.sport }} for TCP
+      firewalld:
+        port: "{{ item.sport }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      with_items:
+        - "{{portlist}}"
+
+    - name: Enable RDP service
+      firewalld:
+        service: rdp
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+

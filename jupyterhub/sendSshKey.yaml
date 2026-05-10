@@ -1,0 +1,20 @@
+---
+- name: 自动化创建和分发SSH公钥
+  hosts: all
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: 检查是否已存在SSH密钥对
+      stat:
+        path: ~/.ssh/id_rsa.pub
+      register: ssh_key_status
+
+    - name: 生成SSH密钥对（如果不存在）
+      command: ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ""
+      when: not ssh_key_status.stat.exists
+
+    - name: 分发公钥到远程机器
+      authorized_key:
+        user: "{{ ansible_user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

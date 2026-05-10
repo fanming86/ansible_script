@@ -1,0 +1,71 @@
+---
+- name: Install Anaconda on target hosts
+  hosts: all
+  gather_facts: no
+  tasks:
+    #    - name: Ensure wget is installed
+    #  yum:
+    #    name: wget
+    #    state: present
+
+    - name: Download Anaconda installer
+      get_url:
+        url: http://219.140.166.58:17242/linuxSoftware/Anaconda3-2024.02-1-Linux-x86_64.sh
+          #url: http://172.31.0.242:17242/linuxSoftware/Anaconda3-2024.02-1-Linux-x86_64.sh
+        dest: /tmp/Anaconda3-2024.02-1-Linux-x86_64.sh
+        mode: '0755'
+        checksum: "sha256:c536ddb7b4ba738bddbd4e581b29308cb332fa12ae3fa2cd66814bd735dff231"
+
+    - name: Run Anaconda installer
+      command: "bash /tmp/Anaconda3-2024.02-1-Linux-x86_64.sh -b -p /usr/local/anaconda"
+      args:
+        creates: /usr/local/anaconda/bin/conda
+
+          #- name: Add Anaconda to the system PATH
+          #lineinfile:
+          #path: /etc/profile.d/anaconda.sh
+          #line: 'export PATH="/usr/local/anaconda/bin:$PATH"'
+          #create: yes
+    
+    - name: 添加Anaconda路径到/etc/profile
+      lineinfile:
+        path: /etc/profile
+        line: 'export PATH="/usr/local/anaconda/bin:$PATH"'
+        state: present
+        create: false
+        insertafter: EOF  # 在文件末尾添加
+        backup: true      # 修改前备份原文件
+
+    - name: Install JupyterHub from conda-forge channel
+      shell: '/usr/local/anaconda/bin/conda install -c conda-forge jupyterhub -y'
+    
+    - name: Install JupyterLab and notebook
+      shell: '/usr/local/anaconda/bin/conda install jupyterlab notebook -y'
+
+    - name: Ensure /etc/jupyterhub_config.py exists by copying from local
+      copy:
+        src: jupyterhub_config.py
+        dest: /etc/jupyterhub_config.py
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy systemd service file for JupyterHub to remote host
+      copy:
+        src: jupyterhub.service
+        dest: /etc/systemd/system/jupyterhub.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Enable and start JupyterHub service
+      systemd:
+        name: jupyterhub
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      command: systemctl daemon-reload

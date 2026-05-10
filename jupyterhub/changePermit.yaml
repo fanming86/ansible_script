@@ -1,0 +1,40 @@
+---
+- name: Manage anaconda group and permissions
+  hosts: all
+  gather_facts: no
+  tasks:
+
+    - name: Create 'anaconda' group
+      ansible.builtin.group:
+        name: anaconda
+        state: present
+
+    - name: Add user 'ubuntu' to 'anaconda' group
+      ansible.builtin.user:
+        name: ubuntu
+        groups: anaconda
+        append: yes
+
+    - name: Change group ownership to 'anaconda' for /opt/model
+      ansible.builtin.file:
+        path: /opt/model
+        group: anaconda
+        recurse: yes
+
+    - name: Set group permissions to 'rwx' for /opt/model
+      ansible.builtin.file:
+        path: /opt/model
+        mode: g=rwx
+        recurse: yes
+
+    - name: Change group ownership to 'anaconda' for /usr/local/anaconda
+      ansible.builtin.file:
+        path: /usr/local/anaconda
+        group: anaconda
+        recurse: yes
+
+    - name: Set group write permissions for /usr/local/anaconda
+      ansible.builtin.file:
+        path: /usr/local/anaconda
+        mode: g+w
+        recurse: yes

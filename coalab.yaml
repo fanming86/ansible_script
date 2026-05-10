@@ -1,0 +1,25 @@
+---
+- name: install vmctl
+  hosts: all
+  gather_facts: no
+  vars:
+    - rht_file: 'http://172.31.0.242:17242/vm/openstackz/openstackz-rht'
+  tasks:
+    - name: yum install vmctl
+      yum:
+        name: 'http://172.31.0.242:17242/vmctl-v4-3.el9.x86_64.rpm'
+        state: installed
+        disable_gpg_check: yes
+
+    - name: copy rhtfile
+      get_url:
+        url: '{{ rht_file }}'
+        dest: /etc/rht
+          #dest: "/opt/"
+
+    - name: start vm
+      #shell: "yes | vmctl remove all"
+      #shell: "yes | vmctl poweroff all"
+      #command: "vmctl stop all"
+      command: "vmctl start all "
+

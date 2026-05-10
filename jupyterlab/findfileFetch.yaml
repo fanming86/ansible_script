@@ -1,0 +1,38 @@
+- name: 用清单IP命名备份文件并清理/tmp（排除models）
+  hosts: 117.50.163.175
+  gather_facts: no
+  vars:
+    # 本地备份路径（按清单IP区分目录）
+    local_backup_dir: "./tmp_backup/{{ inventory_hostname }}"
+    archive_dir: "/opt/jupyter-lab"
+    exclude_path: "models"
+
+  tasks:
+    # 步骤1：查找需删除的文件和目录（排除models）
+    - name: 查找目标文件和目录
+      ansible.builtin.find:
+        patterns: 
+          - "*.csv"
+          - "*.ipynb"
+          - "*.py"
+        path: "{{ archive_dir }}"
+        recurse: yes
+        depth: 3
+        file_type: any
+        hidden: false
+        use_regex: false
+        excludes: 
+          - "{{ archive_dir }}/{{ exclude_path }}"
+          - ".{{ archive_dir }}/cache"
+          - ".local"
+          - ".ipynb_checkpoints"
+      register: find_files
+
+
+
+    - name: 拉取找到的文件
+      fetch:
+          src: "{{ item.path }}"
+          dest: "./fetch_file/"
+          flat: yes
+      loop: "{{ find_files.files }}"

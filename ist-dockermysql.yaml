@@ -1,0 +1,36 @@
+---
+- name: Install MySQL 8 and Docker CE
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Add custom YUM repository
+      yum_repository:
+        name: custom_repo
+        description: Custom YUM repository
+        baseurl: http://172.31.0.242:17242/centos7_db/
+        gpgcheck: no
+        enabled: yes
+
+    - name: Install MySQL 8 and Docker CE
+      yum:
+        name:
+          - mysql-community-server
+          - docker-ce
+          - podman
+          - wget
+        state: present
+
+    - name: start mysql
+      service:
+        name: mysqld
+        state: started
+
+    - name: Copy shell script to remote host
+      copy:
+        src: init_mysql.sh
+        dest: /tmp/init_mysql.sh
+        mode: '0755'  # Set appropriate permissions
+
+    - name: Execute the shell script
+      shell:
+        cmd: /tmp/init_mysql.sh

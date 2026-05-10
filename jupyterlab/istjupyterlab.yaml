@@ -1,0 +1,93 @@
+---
+- name: Install Anaconda on target hosts
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Download Anaconda installer
+      get_url:
+        url: http://219.140.166.58:17242/linuxSoftware/Anaconda3-2024.02-1-Linux-x86_64.sh
+          #url: http://172.31.0.242:17242/linuxSoftware/Anaconda3-2024.02-1-Linux-x86_64.sh
+        dest: /tmp/Anaconda3-2024.02-1-Linux-x86_64.sh
+        mode: '0755'
+        checksum: "sha256:c536ddb7b4ba738bddbd4e581b29308cb332fa12ae3fa2cd66814bd735dff231"
+
+    - name: Run Anaconda installer
+      command: "bash /tmp/Anaconda3-2024.02-1-Linux-x86_64.sh -b -p /usr/local/anaconda"
+      args:
+        creates: /usr/local/anaconda/bin/conda
+
+    - name: 添加Anaconda路径到/etc/profile
+      lineinfile:
+        path: /etc/profile
+        line: 'export PATH="/usr/local/anaconda/bin:$PATH"'
+        state: present
+        create: false
+        insertafter: EOF  # 在文件末尾添加
+        backup: true      # 修改前备份原文件
+
+    - name: Set up pip to use Tsinghua mirrors
+      copy:
+        dest: /etc/pip.conf
+        content: |
+          [global]
+          index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+          [install]
+          trusted-host = pypi.tuna.tsinghua.edu.cn
+
+    - name: Install Python packages
+      pip:
+        name:
+          - jupyterlab
+          - jupyterlab-language-pack-zh-CN
+          - jupyterlab_code_formatter
+          - jupyterlab-lsp 
+        state: present
+        virtualenv: /usr/local/anaconda  
+
+
+    - name: 创建training用户，指定家目录和shell
+      user:
+        name: training               # 用户名
+        home: /opt/jupyter-lab       # 家目录路径
+        shell: /bin/bash             # 默认shell
+        create_home: yes             # 自动创建家目录
+        state: present               # 确保用户存在
+
+
+    - name: 设置/opt/jupyter-lab目录权限
+      file:
+        path: /opt/jupyter-lab
+        owner: training
+        group: training
+        mode: '0755'                 # 确保用户对家目录有读写执行权限
+        recurse: yes                 # 递归应用权限设置
+
+    - name: Copy systemd service file for JupyterHub to remote host
+      copy:
+        src: jupyterlab.service
+        dest: /etc/systemd/system/jupyterlab.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+        - restart jupyterlab
+
+
+    - name: start jupyterlab
+      systemd:
+        name: jupyterlab
+        enabled: yes
+        state: started
+
+
+  handlers:
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: restart jupyterlab
+      systemd:
+        name: jupyterlab
+        enabled: yes
+        state: restarted
+

@@ -1,0 +1,33 @@
+---
+- name: install vmctl
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - envlist/k8s27.yaml
+    #- envlist/centos7X3.yaml
+    #- envlist/openstack-zed.yaml
+    #- envlist/cephq.yaml
+    #- envlist/cloudsecurity.yaml
+  tasks:
+    - name: yum install vmctl
+      yum:
+    #    name: http://172.31.0.242:17242/vmctl-v3-5.el7.x86_64.rpm
+        name: http://172.31.0.242:17242/vmctl-v4-2.el7.x86_64.rpm
+        state: installed
+
+    - name: copy rhtfile
+      get_url:
+        url: '{{ rht_file }}'
+        dest: /etc/rht
+
+    - name: copy image file
+      get_url:
+        url: "{{downloadurl}}/{{tp}}{{ item }}"
+        dest: "/var/lib/libvirt/images/{{item}}.ovl"
+      loop: "{{ images }}"
+      notify: start vm
+#
+  handlers:
+    - name: start vm
+      command: "vmctl start all"
+

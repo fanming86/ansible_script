@@ -1,0 +1,58 @@
+- name: 用清单IP命名备份文件并清理/tmp（排除models）
+  hosts: 117.50.163.175
+  gather_facts: no
+  vars:
+    # 本地备份路径（按清单IP区分目录）
+    local_backup_dir: "./tmp_backup/{{ inventory_hostname }}"
+    archive_dir: "/opt/jupyter-lab"
+    exclude_path: "models"
+
+  tasks:
+    # 步骤1：查找需删除的文件和目录（排除models）
+    - name: 查找目标文件和目录
+      ansible.builtin.find:
+        path: "{{ archive_dir }}"
+        recurse: no
+        file_type: any
+        hidden: false
+        use_regex: false
+        excludes: 
+          - "{{ archive_dir }}/{{ exclude_path }}"
+          - ".{{ archive_dir }}/cache"
+          - ".local"
+      register: items_to_delete
+
+
+    # 步骤4：处理目录（用IP+目录名命名压缩包）
+    - name: 用archive模块打包目录（IP命名）
+      ansible.builtin.archive:
+        path: "{{ archive_dir }}"
+        dest: "/tmp/{{ inventory_hostname }}.tar"
+        format: tar
+        mode: '0644'
+        exclude_path:
+          - "{{ exclude_path }}"
+
+
+    - name: 下载目录压缩包到本地（按IP目录存放）
+      ansible.builtin.fetch:
+        src: "/tmp/{{ inventory_hostname }}.tar.gz"
+        dest: "{{ local_backup_dir }}/"
+        flat: yes
+        validate_checksum: yes
+
+
+    # 步骤6：清理远程临时文件
+    - name: 清理远程临时打包目录
+      ansible.builtin.file:
+        path: "/tmp/{{ inventory_hostname }}.tar"
+        state: absent
+
+    # 步骤7：删除原始内容
+    #- name: 删除远程目标内容
+      #ansible.builtin.file:
+        #path: "{{ item.path }}"
+          # state: absent
+          #   with_items: "{{ items_to_delete.files }}"
+
+    

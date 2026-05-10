@@ -1,0 +1,17 @@
+---
+- name: chk
+  hosts: all
+  gather_facts: no
+  vars:
+    examName: examDefault
+  tasks:
+    - name: get root history
+      fetch:
+        src: /root/.bash_history
+        dest: /tmp/{{examName}}/
+
+    - name: get training history
+      fetch:
+        src: /home/training/.bash_history
+        dest: /tmp/{{examName}}/
+

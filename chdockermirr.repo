@@ -1,0 +1,29 @@
+---
+- name: change docker mirr
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: copy daemon file
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+              "registry-mirrors": [
+              "https://docker.m.daocloud.io",
+              "https://docker.1ms.run",
+              "https://docker.1panel.live",
+              "https://hub.rat.dev",
+              "https://docker-mirror.aigc2d.com",
+              "https://docker.xuanyuan.me"
+              ]
+          }
+      register: copy_rs
+
+    - name: restart docker 
+      ansible.builtin.systemd:
+        name: docker
+        daemon_reload: yes
+        enabled: yes
+        state: started
+      when: copy_rs.changed
+
